@@ -3,6 +3,7 @@ import { Routes, Services } from "@/utils/constants"
 import { IAuthService } from "./auth"
 import { CreateUserDto } from "./dto"
 import { IUserService } from "@/user/user"
+import { exclude } from "@/utils/helpers"
 
 @Controller(Routes.AUTH)
 export class AuthController {
@@ -12,8 +13,10 @@ export class AuthController {
     ) {}
 
     @Post("/register")
-    register(@Body() createUserDto: CreateUserDto) {
-        this.userService.createUser(createUserDto)
+    async register(@Body() createUserDto: CreateUserDto) {
+        const user = await this.userService.createUser(createUserDto)
+        const userWithoutPassword = exclude(user, ['password'])
+        return userWithoutPassword
     }
 
     @Post("/login")
