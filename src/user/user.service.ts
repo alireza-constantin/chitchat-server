@@ -2,17 +2,27 @@ import { BadRequestException, Injectable } from "@nestjs/common"
 import { IUserService } from "./user"
 import { createUser } from "@/utils/types"
 import { PrismaService } from "@/prisma/prisma.service"
-import * as bcrypt from "bcrypt"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { User } from "@prisma/client"
+import { hashText } from "@/utils/helpers"
 
 @Injectable()
 export class UserService implements IUserService {
     constructor(private prisma: PrismaService) {}
+    
+    
+    findUser(userDetail: Partial<{ email: string; id: number }>): Promise<User> {
+        return  this.prisma.user.findUnique({
+            where: {
+                email: userDetail.email
+            }
+        })
+        
+    }
 
     async createUser(createUser: createUser): Promise<User> {
         try {
-            const hashedPassword = await this.hashPassword(createUser.password)
+            const hashedPassword = await hashText(createUser.password)
             const user = await this.prisma.user.create({
                 data: {
                     email: createUser.email,
@@ -31,8 +41,5 @@ export class UserService implements IUserService {
         }
     }
 
-    async hashPassword(rawPassword: string): Promise<string> {
-        const salt = await bcrypt.genSalt()
-        return bcrypt.hash(rawPassword, salt)
-    }
+    
 }

@@ -1,3 +1,3 @@
 export interface IAuthService {
-    validateUser();
+    validateUser(email: string, passport: string): Promise<boolean>;
 }

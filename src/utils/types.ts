@@ -4,3 +4,8 @@ export type createUser = {
     firstName: string,
     lastName: string
 }
+
+export type FindUserDetail = Partial<{
+    email: string,
+    id: number
+}>
