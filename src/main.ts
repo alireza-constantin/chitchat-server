@@ -5,6 +5,7 @@ import * as session from "express-session"
 import * as passport from "passport"
 import Redis from "ioredis"
 import connectRedis from "connect-redis"
+import { magenta, bold, red, blue } from "chalk"
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
@@ -14,9 +15,9 @@ async function bootstrap() {
     const redisClient = new Redis(process.env.REDIS_URL)
 
     redisClient.on("error", (err) =>
-        console.error("Could not establish a connection with redis. " + err)
+        console.error(red("Could not establish a connection with redis. " + err))
     )
-    redisClient.on("connect", () => console.log("Connected to redis successfully"))
+    redisClient.on("connect", () => console.log(magenta(bold("Connected to redis successfully"))))
 
     const redisStore = new connectRedis({ client: redisClient, prefix: "chitchat" })
 
@@ -37,7 +38,7 @@ async function bootstrap() {
 
     const PORT = process.env.PORT || 8080
     try {
-        await app.listen(PORT, () => console.log(`Server is Running on ${PORT}`))
+        await app.listen(PORT, () => console.log(blue(`Server is Running on ${PORT}`)))
     } catch (error) {
         console.log(error)
     }

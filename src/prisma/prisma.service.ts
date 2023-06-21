@@ -23,7 +23,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                     level: "warn",
                 },
             ],
-            errorFormat: "colorless",
+            errorFormat: "pretty",
         })
     }
     async onModuleInit() {
