@@ -12,9 +12,9 @@ export class UserService implements IUserService {
     
     
     findUser(userDetail: Partial<{ email: string; id: number }>): Promise<User> {
-        return  this.prisma.user.findUnique({
+        return  this.prisma.user.findFirst({
             where: {
-                email: userDetail.email
+                OR: [{ email: userDetail.email }, { id: userDetail.id }]
             }
         })
         

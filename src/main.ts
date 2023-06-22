@@ -10,6 +10,10 @@ import { magenta, bold, red, blue } from "chalk"
 async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.setGlobalPrefix("api")
+     app.enableCors({
+         credentials: true,
+         origin: ["http://localhost:5173"],
+     })
     app.useGlobalPipes(new ValidationPipe())
 
     const redisClient = new Redis(process.env.REDIS_URL)
@@ -28,7 +32,7 @@ async function bootstrap() {
             saveUninitialized: false,
             resave: false,
             cookie: {
-                maxAge: 60 * 60 * 24, // 1day
+                maxAge: 60 * 60 * 24 * 1000, // 1day
             },
         })
     )

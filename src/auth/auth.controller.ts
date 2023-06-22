@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from "@nestjs/common"
+import { Body, Controller, Get, Inject, Post, Req, Res, UseGuards } from "@nestjs/common"
 import { Routes, Services } from "@/utils/constants"
 import { IAuthService } from "./auth"
 import { CreateUserDto } from "./dto"
 import { IUserService } from "@/user/user"
 import { exclude } from "@/utils/helpers"
-import { LocalAuthGuard } from "./utils/auth.strategy"
+import { AuthenticatedGuard, LocalAuthGuard } from "./utils/auth.strategy"
+import { Request, Response } from "express"
+import { User } from "@prisma/client"
 
 @Controller(Routes.AUTH)
 export class AuthController {
@@ -22,11 +24,18 @@ export class AuthController {
 
     @Post("/login")
     @UseGuards(LocalAuthGuard)
-    login() {}
+    login() {
+        return { ok: true }
+    }
 
     @Post("/logout")
     logout() {}
 
     @Get("/status")
-    status() {}
+    @UseGuards(AuthenticatedGuard)
+    status(@Req() req: Request, @Res() res: Response) {
+        const user = req.user as User;
+        const userWithoutPassword = exclude(user, ['password'])
+        res.json(req.user)
+    }
 }
