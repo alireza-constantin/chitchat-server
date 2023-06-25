@@ -8,8 +8,9 @@ export class LocalAuthGuard extends AuthGuard('local'){
         const request = ctx.switchToHttp().getRequest()
         await super.logIn(request)
         return res;
-    }
+    } 
 }
+
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {

@@ -9,3 +9,9 @@ export type FindUserDetail = Partial<{
     email: string,
     id: number
 }>
+
+export type CreateConversationsParams = {
+    authorId: number,
+    recipientId: number,
+    message: string
+}
