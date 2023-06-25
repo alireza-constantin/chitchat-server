@@ -11,12 +11,50 @@ datasource db {
 }
 
 model User {
-  id  Int @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  email String  @unique
-  password  String  
+  email     String @unique
+  password  String
   firstName String
   lastName  String
+
+  messages Message[]
+
+  conversationCreated Conversation[] @relation("created_conversations")
+  conversationRecived Conversation[] @relation("recived_conversations")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  text String
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  conversationId Int
+  conversation   Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  // Conversation   Conversation[]
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creatorId Int
+  creator   User @relation("created_conversations", fields: [creatorId], references: [id])
+
+  recipientId Int
+  recipinet   User @relation("recived_conversations", fields: [recipientId], references: [id])
+
+  messages Message[]
+
+  // lastMessage   Message @relation("lastMessage", fields: [] references: [id])
+
+  @@index([recipientId, creatorId])
 }

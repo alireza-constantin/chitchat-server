@@ -9,8 +9,8 @@ import { IConversationsService } from './conversations';
 export class ConversationsController {
     constructor(@Inject(Services.CONVERSATIONS) private conversationService: IConversationsService ){}
     
-    @Post('/conversation')
+    @Post('/')
     createConversation(@Body() createConversationDto: CreateConversationDto){
-        this.conversationService.createConversation(createConversationDto)
+        return this.conversationService.createConversation(createConversationDto)
     }
 }

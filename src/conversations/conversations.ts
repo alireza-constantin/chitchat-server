@@ -1,5 +1,5 @@
 import { CreateConversationsParams } from "@/utils/types";
 
-interface IConversationsService {
+export interface IConversationsService {
     createConversation(createConversationParams: CreateConversationsParams);
 }
