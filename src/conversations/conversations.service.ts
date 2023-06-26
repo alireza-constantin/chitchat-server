@@ -23,7 +23,7 @@ export class ConversationsService implements IConversationsService {
             },
         })
 
-        // check to see if the conversation already existed just create a message not another conversation
+        // check to see if the conversation already exists, if it is just create a message not another conversation
         if(existingConversation){
             return this.prismaService.message.create({
                 data: {

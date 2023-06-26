@@ -1,3 +1,5 @@
+import { User } from "@prisma/client"
+
 export type createUser = {
     email: string,
     password: string,
@@ -14,4 +16,8 @@ export type CreateConversationsParams = {
     authorId: number,
     recipientId: number,
     message: string
+}
+
+export interface AuthenticatedRequest extends Request {
+    user: User
 }
