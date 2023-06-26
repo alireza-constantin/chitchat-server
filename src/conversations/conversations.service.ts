@@ -1,7 +1,9 @@
 import { CreateConversationsParams } from "@/utils/types"
-import { Injectable } from "@nestjs/common"
+import { Injectable, NotFoundException } from "@nestjs/common"
 import { IConversationsService } from "./conversations"
 import { PrismaService } from "@/prisma/prisma.service"
+import { Conversation } from "@prisma/client"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
@@ -47,4 +49,37 @@ export class ConversationsService implements IConversationsService {
             }
         })
     }
+
+    async findConversaionById(id: number) {
+        try {
+            const conversation = await this.prismaService.conversation.findFirstOrThrow({
+                where: {
+                    id: id,
+                },
+                include: {
+                    messages: true,
+                    recipinet: {
+                        select: {
+                            email: true,
+                            firstName: true,
+                            lastName: true
+                        }
+                    }
+                }
+            })
+            return conversation
+        } catch (error) {
+            if(error instanceof PrismaClientKnownRequestError){
+                if (error.code === "P2025"){
+                    throw new NotFoundException("Conversation Not Found")
+                } else {
+                    console.log(error)
+                }
+            } else {
+                console.log(error)
+            }
+        }
+        
+    }
+
 }

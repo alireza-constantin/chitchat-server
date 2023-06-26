@@ -1,6 +1,6 @@
 import { AuthenticatedGuard } from "@/auth/utils/auth.strategy"
 import { Routes, Services } from "@/utils/constants"
-import { Body, Controller, Inject, Post, UseGuards } from "@nestjs/common"
+import { Body, Controller, Get, Inject, Param, Post, UseGuards } from "@nestjs/common"
 import { CreateConversationDto } from "./dto/createConversation.dto"
 import { IConversationsService } from "./conversations"
 import { AuthUser } from "@/utils/decorator"
@@ -13,7 +13,7 @@ export class ConversationsController {
         @Inject(Services.CONVERSATIONS) private conversationService: IConversationsService
     ) {}
 
-    @Post("/")
+    @Post()
     createConversation(
         @AuthUser() user: User,
         @Body() createConversationDto: CreateConversationDto
@@ -23,5 +23,12 @@ export class ConversationsController {
             message: createConversationDto.message,
             recipientId: createConversationDto.recipientId,
         })
+    }
+
+
+    @Get(':id')
+    findConversationById(@Param("id") id: number){
+        // console.log(id)
+        return this.conversationService.findConversaionById(Number(id))
     }
 }
