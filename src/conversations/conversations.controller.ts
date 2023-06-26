@@ -4,7 +4,7 @@ import { Body, Controller, Get, Inject, Param, Post, UseGuards } from "@nestjs/c
 import { CreateConversationDto } from "./dto/createConversation.dto"
 import { IConversationsService } from "./conversations"
 import { AuthUser } from "@/utils/decorator"
-import { User } from "@prisma/client"
+import { Conversation, User } from "@prisma/client"
 
 @Controller(Routes.CONVERSATIONS)
 @UseGuards(AuthenticatedGuard)
@@ -26,9 +26,13 @@ export class ConversationsController {
     }
 
 
+    @Get()
+    getAllUserConveration(@AuthUser() user:User): Promise<Conversation[]>{
+        return this.conversationService.getAllUserConversations(user.id)
+    }
+
     @Get(':id')
-    findConversationById(@Param("id") id: number){
-        // console.log(id)
-        return this.conversationService.findConversaionById(Number(id))
+    findConversationById(@Param("id") id: number): Promise<Conversation>{
+        return this.conversationService.findConversationById(Number(id))
     }
 }
