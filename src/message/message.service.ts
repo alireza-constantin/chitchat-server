@@ -3,8 +3,6 @@ import { BadRequestException, ForbiddenException, Inject, Injectable } from "@ne
 import { IMessageService } from "./message"
 import { CreateMessageParams } from "@/utils/types"
 import { Message } from "@prisma/client"
-import { Services } from "@/utils/constants"
-import { IConversationsService } from "@/conversations/conversations"
 
 @Injectable()
 export class MessageService implements IMessageService {
