@@ -1,13 +1,18 @@
 import type { CreateConversationsParams } from "@/utils/types"
 import type { IConversationsService } from "./conversations"
 import type { Conversation } from "@prisma/client"
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common"
 import { PrismaService } from "@/prisma/prisma.service"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { Services } from "@/utils/constants"
+import { IMessageService } from "@/message/message"
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        @Inject(Services.MESSAGE) private readonly messageService: IMessageService
+    ) {}
 
     async createConversation(createConversationDetails: CreateConversationsParams) {
         const { authorId, message, recipientId } = createConversationDetails
@@ -29,12 +34,10 @@ export class ConversationsService implements IConversationsService {
 
             // check to see if the conversation already exists, if it is just create a message not another conversation
             if (existingConversation) {
-                return await this.prismaService.message.create({
-                    data: {
-                        text: message,
-                        authorId: authorId,
-                        conversationId: existingConversation.id,
-                    },
+                return await this.messageService.createMessage({
+                    authorId,
+                    conversationId: existingConversation.id,
+                    message,
                 })
             }
 

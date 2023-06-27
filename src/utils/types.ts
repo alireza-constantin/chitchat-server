@@ -18,6 +18,12 @@ export type CreateConversationsParams = {
     message: string
 }
 
+export type CreateMessageParams = {
+    message: string,
+    authorId: number,
+    conversationId: number
+}
+
 export interface AuthenticatedRequest extends Request {
     user: User
 }
