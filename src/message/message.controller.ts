@@ -5,18 +5,22 @@ import { Body, Controller, Inject, Post, UseGuards } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { CreateMessageDto } from "./dto/createMessageDto"
 import { IMessageService } from "./message"
+import { EventEmitter2 } from "@nestjs/event-emitter"
 
 @Controller(Routes.MESSAGE)
 @UseGuards(AuthenticatedGuard)
 export class MessageController {
-    constructor(@Inject(Services.MESSAGE) private readonly messageService: IMessageService) {}
+    constructor(@Inject(Services.MESSAGE) private readonly messageService: IMessageService, 
+    private readonly eventEmitter: EventEmitter2) {}
 
     @Post()
-    createMessage(@AuthUser() user: User, @Body() createMessageDto: CreateMessageDto) {
-        return this.messageService.createMessage({
+    async createMessage(@AuthUser() user: User, @Body() createMessageDto: CreateMessageDto) {
+        const msg = await this.messageService.createMessage({
             authorId: user.id,
             conversationId: createMessageDto.conversationId,
             message: createMessageDto.message,
         })
+
+        this.eventEmitter.emit('message.create', msg)
     }
 }

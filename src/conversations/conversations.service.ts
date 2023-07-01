@@ -107,6 +107,15 @@ export class ConversationsService implements IConversationsService {
             where: {
                 creatorId: userId,
             },
+            include: {
+                recipinet: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        id: true
+                    }
+                }
+            }
         })
     }
 }
