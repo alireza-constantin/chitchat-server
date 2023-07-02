@@ -18,9 +18,10 @@ export class MessageController {
         const msg = await this.messageService.createMessage({
             authorId: user.id,
             conversationId: createMessageDto.conversationId,
-            message: createMessageDto.message,
+            text: createMessageDto.text,
         })
 
         this.eventEmitter.emit('message.create', msg)
+        return msg
     }
 }

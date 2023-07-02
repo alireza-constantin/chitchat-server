@@ -13,7 +13,7 @@ export class MessageService implements IMessageService {
     async createMessage({
         authorId,
         conversationId,
-        message,
+        text,
     }: CreateMessageParams): Promise<Message> {
         const conversation = await this.prismaService.conversation.findUnique({
             where: {
@@ -25,12 +25,15 @@ export class MessageService implements IMessageService {
             throw new BadRequestException("Conversation not found")
         }
 
-        if (conversation.creatorId !== authorId || conversation.recipientId !== authorId){
+        console.log(authorId)
+        console.log(conversation)
+
+        if (conversation.creatorId !== authorId && conversation.recipientId !== authorId){
             throw new ForbiddenException('can not send message in this conversation')
         }
             return this.prismaService.message.create({
                 data: {
-                    text: message,
+                    text,
                     authorId: authorId,
                     conversationId: conversationId,
                 },

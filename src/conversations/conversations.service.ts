@@ -37,7 +37,7 @@ export class ConversationsService implements IConversationsService {
                 return await this.messageService.createMessage({
                     authorId,
                     conversationId: existingConversation.id,
-                    message,
+                    text: message,
                 })
             }
 
@@ -105,7 +105,7 @@ export class ConversationsService implements IConversationsService {
     getAllUserConversations(userId: number): Promise<Conversation[]> {
         return this.prismaService.conversation.findMany({
             where: {
-                creatorId: userId,
+                OR: [{ creatorId: userId}, { recipientId: userId }]
             },
             include: {
                 recipinet: {

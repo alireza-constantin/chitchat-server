@@ -19,7 +19,7 @@ export type CreateConversationsParams = {
 }
 
 export type CreateMessageParams = {
-    message: string,
+    text: string,
     authorId: number,
     conversationId: number
 }
