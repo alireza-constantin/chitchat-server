@@ -50,7 +50,7 @@ model Conversation {
   creator   User @relation("created_conversations", fields: [creatorId], references: [id])
 
   recipientId Int
-  recipinet   User @relation("recived_conversations", fields: [recipientId], references: [id])
+  recipient   User @relation("recived_conversations", fields: [recipientId], references: [id])
 
   messages Message[]
 
